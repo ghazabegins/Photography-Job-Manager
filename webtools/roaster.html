@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Roasting AI - TJ SOSMED TOOLS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Style Khusus Halaman Roasting */
+        .roast-header {
+            background: linear-gradient(45deg, #FF512F, #DD2476);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+        
+        .roast-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .roast-options label {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .roast-select {
+            width: 100%;
+            padding: 12px;
+            background: #2c2c2c;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .roast-result-box {
+            background: #1a1a1a;
+            border: 2px solid #DD2476; /* Warna Pink kemerahan */
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(221, 36, 118, 0.2);
+        }
+
+        .roast-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace; /* Font ala terminal/hacker */
+        }
+
+        .fire-anim {
+            font-size: 3rem;
+            animation: burn 0.5s infinite alternate;
+        }
+
+        @keyframes burn {
+            from { opacity: 0.8; transform: scale(1); }
+            to { opacity: 1; transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="roastPage">
+        <div style="text-align: left; width: 100%; margin-bottom: 20px;">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Kembali ke Dashboard</a>
+        </div>
+
+        <header>
+            <h1><i class="fas fa-fire" style="color: #FF512F;"></i> Insta <span class="roast-header">Roasting AI</span></h1>
+            <p>Analisa profil Instagram kamu dan biarkan AI menghujatnya dengan kejam.</p>
+        </header>
+
+        <div class="caption-form">
+            <div class="form-group">
+                <label>Username Instagram (Tanpa @):</label>
+                <div class="input-with-btn">
+                    <span style="padding: 12px; background: #333; border: 1px solid #444; border-right: none; border-radius: 8px 0 0 8px;">@</span>
+                    <input type="text" id="roastUsername" placeholder="cth: jokowi" style="border-radius: 0 8px 8px 0;">
+                </div>
+            </div>
+
+            <div class="roast-options">
+                <div>
+                    <label>Level Kepedasan:</label>
+                    <select id="roastLevel" class="roast-select">
+                        <option value="mild">🌶️ Mild (Sarkas Tipis)</option>
+                        <option value="spicy" selected>🔥 Spicy (Menyala)</option>
+                        <option value="burnt">💀 Burnt (Toxic Abis)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Tipe Persona:</label>
+                    <select id="roastPersona" class="roast-select">
+                        <option value="general">🌍 Umum / Random</option>
+                        <option value="selebgram">✨ Sok Selebgram</option>
+                        <option value="sadboy">🥀 Sadboy / Galau</option>
+                        <option value="wibu">🌸 Wibu / Anime</option>
+                        <option value="rich">💸 Sok Sultan (Flexing)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="generateRoast()" class="btn-generate" style="background: linear-gradient(45deg, #FF512F, #DD2476); color: white;">
+                <i class="fas fa-biohazard"></i> MULAI ROASTING
+            </button>
+        </div>
+
+        <div id="loading" class="hidden">
+            <div class="spinner" style="border-top-color: #FF512F;"></div>
+            <p id="loadingText">Sedang menganalisa feed...</p>
+        </div>
+
+        <div id="result" class="hidden">
+            <h3>🔥 Hasil Analisa:</h3>
+            
+            <div class="roast-result-box">
+                <p id="roastOutput" class="roast-text">...</p>
+            </div>
+            
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button onclick="copyRoast()" class="btn-copy">
+                    <i class="fas fa-copy"></i> Salin Hujatan
+                </button>
+                <button onclick="generateRoast()" class="btn-refresh" style="border-color: #FF512F; color: #FF512F;">
+                    <i class="fas fa-redo"></i> Roast Ulang
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            <p>⚠️ Warning: Hanya untuk hiburan. Jangan baper.</p>
+            <p>&copy; 2025 TJ Sosmed Tools.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

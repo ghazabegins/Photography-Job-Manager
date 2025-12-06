@@ -149,9 +149,23 @@ if (document.getElementById('urlInput')) {
             let platform = '';
 
             if (urlInput.includes('instagram.com')) {
-                platform = 'Instagram';
-                apiUrl = `https://${apiHost}/instagram/v3/media/download?url=${encodeURIComponent(urlInput)}`;
-            } else if (urlInput.includes('tiktok.com')) {
+    platform = 'Instagram';
+
+    // 1. Ekstrak Shortcode (ID unik) dari URL Instagram
+    // Regex ini mencari teks setelah /p/, /reel/, atau /tv/
+    const shortcodeRegex = /(?:p|reel|tv|reels)\/([a-zA-Z0-9_-]+)/;
+    const match = urlInput.match(shortcodeRegex);
+    const shortcode = match ? match[1] : null;
+
+    if (shortcode) {
+        // 2. Masukkan shortcode ke dalam struktur API baru Anda
+        // Menambahkan renderableFormats=720p%2Chighres seperti permintaan
+        apiUrl = `https://${apiHost}/instagram/v3/media/post/details?shortcode=${shortcode}&renderableFormats=720p%2Chighres`;
+    } else {
+        console.error("Gagal mengambil Shortcode dari URL Instagram.");
+        // Opsional: Handle error jika URL tidak valid
+    }
+} else if (urlInput.includes('tiktok.com')) {
                 platform = 'TikTok';
                 apiUrl = `https://${apiHost}/tiktok/v3/post/details?url=${encodeURIComponent(urlInput)}`;
             } else if (urlInput.includes('facebook.com') || urlInput.includes('fb.watch')) {
@@ -742,4 +756,103 @@ if (document.getElementById('carouselPage')) {
         ctx.font = `bold ${w*0.025}px Arial`; ctx.textAlign = 'right'; 
         ctx.fillText(`${num}/${total}`, w - (w*0.05), h - (h*0.05));
     }
+}
+
+// ==========================================
+// 11. FITUR BARU: IG ROASTING GENERATOR
+// ==========================================
+if (document.getElementById('roastPage')) {
+    
+    // Database Hujatan / Template Roasting
+    const roasts = {
+        "selebgram": [
+            "Bio tulisannya 'Business Inquiries' tapi yang DM cuma olshop peninggi badan.",
+            "Feeds lo rapi banget, sayang hidup lo berantakan.",
+            "Sok-sokan estetik foto kopi, padahal aslinya minum ale-ale.",
+            "Followers 2k, Following 1.9k. Itu akun apa asrama putri?",
+            "Story 20 titik sehari, dikira lagi bikin presentasi PPT?",
+            "Foto OOTD tiap hari, tapi bajunya itu-itu doang. Endorse laundry kiloan ya?"
+        ],
+        "sadboy": [
+            "Story isinya lagu galau, padahal putusnya cuma di imajinasi.",
+            "Profil lo lebih gelap dari masa depan lo.",
+            "Bio: 'Trust no one'. Halah, dipinjemin duit 50 ribu juga langsung percaya.",
+            "Sering repost quotes bijak biar dikira dewasa, aslinya cengeng.",
+            "Highlight story isinya 'Memories', padahal isinya cuma foto langit mendung."
+        ],
+        "wibu": [
+            "Bau bawangnya kecium sampe ke notifikasi gue.",
+            "Bio pake bahasa Jepang hasil Google Translate, artinya 'Saya suka makan sabun'.",
+            "Poto profil anime, pasti aslinya jarang mandi.",
+            "Story isinya waifu gepeng, sadar woy dia gak nyata!",
+            "Cita-cita ke Akihabara, realita nongkrong di warkop belom bayar gorengan."
+        ],
+        "rich": [
+            "Pamer iPhone boba, padahal cicilan paylater belum lunas.",
+            "Foto di mobil orang, caption 'Work Hard'. Hard apanya? Halu?",
+            "Instastory makan mewah, pas di rumah makannya mie instan dibagi dua.",
+            "Sok crypto enthusiast, padahal beli dogecoin 10 ribu perak nyangkut.",
+            "Outfit branded KW Mangga Dua bangga banget dipamerin."
+        ],
+        "general": [
+            "Muka pas-pasan, filter kebagusan. Kalo ketemu asli dikira beda orang.",
+            "Akun digembok, dikira ada yang mau maling foto aib lu?",
+            "Rajin update status, tapi males update skill.",
+            "Posting foto caption 'No Filter', padahal editnya 3 aplikasi.",
+            "Itu muka apa adonan donat? Tepungnya tebel banget."
+        ]
+    };
+
+    window.generateRoast = function() {
+        const username = document.getElementById('roastUsername').value.trim();
+        const type = document.getElementById('roastPersona').value;
+        const level = document.getElementById('roastLevel').value;
+        
+        if (!username) { alert("Masukin username dulu woy!"); return; }
+
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const output = document.getElementById('roastOutput');
+        const loadText = document.getElementById('loadingText');
+
+        // Reset Tampilan
+        result.classList.add('hidden');
+        loading.classList.remove('hidden');
+        
+        // Simulasi Analisa "AI" (biar terlihat canggih)
+        const steps = ["Mencari akun...", "Menganalisa feed cringe...", "Menghitung jumlah filter...", "Menyiapkan mental...", "Memasak hujatan..."];
+        let step = 0;
+        
+        const interval = setInterval(() => {
+            if(step < steps.length) {
+                loadText.innerText = steps[step];
+                step++;
+            } else {
+                clearInterval(interval);
+                
+                // Proses Random Roasting
+                const templates = roasts[type] || roasts['general'];
+                const randomRoast = templates[Math.floor(Math.random() * templates.length)];
+                const randomRoast2 = roasts['general'][Math.floor(Math.random() * roasts['general'].length)];
+                
+                let finalRoast = "";
+                
+                if (level === 'mild') {
+                    finalRoast = `Buat @${username}: ${randomRoast} 😂`;
+                } else if (level === 'spicy') {
+                    finalRoast = `Eh @${username}, dengerin ya. ${randomRoast} Tambah lagi nih: ${randomRoast2} 🔥`;
+                } else {
+                    finalRoast = `WOY @${username}! 💀 ${randomRoast} Muka tembok ya? ${randomRoast2} Mending lu hapus akun aja dah. 🚮`;
+                }
+
+                output.innerText = finalRoast;
+                loading.classList.add('hidden');
+                result.classList.remove('hidden');
+            }
+        }, 800); // Delay per step biar ada efek loading
+    };
+
+    window.copyRoast = function() {
+        navigator.clipboard.writeText(document.getElementById('roastOutput').innerText).then(() => alert("Hujatan tersalin! Siap diposting."));
+    };
 }
