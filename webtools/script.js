@@ -758,103 +758,102 @@ if (document.getElementById('carouselPage')) {
     }
 }
 
-/* ==========================================
-   11. FITUR BARU: IG ROASTING GENERATOR (FIXED)
-   ========================================== */
-(function() { // Membungkus agar aman dari konflik
-    const roastPage = document.getElementById('roastPage');
-    
-    if (roastPage) {
-        console.log("Fitur Roasting Aktif!"); // Cek di Console jika ini muncul
+// ==========================================
+// 11. FITUR BARU: IG ROASTING BY GEMINI AI (FIXED MODEL)
+// ==========================================
+if (document.getElementById('roastPage')) {
 
-        const roasts = {
-            "selebgram": [
-                "Bio 'Business Inquiries' tapi DM isinya cuma peninggi badan.",
-                "Feeds rapi, sayang hidup lo berantakan.",
-                "Sok estetik foto kopi, aslinya minum ale-ale.",
-                "Followers 2k, Following 1.9k. Itu akun apa asrama?",
-                "Story 20 titik sehari, lagi bikin PPT kuliah?",
-                "Foto OOTD tiap hari, baju itu-itu doang. Endorse laundry?"
-            ],
-            "sadboy": [
-                "Story lagu galau, padahal putusnya cuma di imajinasi.",
-                "Profil lo lebih gelap dari masa depan.",
-                "Bio 'Trust no one'. Halah, dipinjemin gocap langsung percaya.",
-                "Repost quotes bijak biar dikira dewasa, aslinya cengeng.",
-                "Highlight 'Memories' isinya cuma foto langit mendung."
-            ],
-            "wibu": [
-                "Bau bawangnya nembus layar HP gue.",
-                "Bio Jepang hasil Google Translate, artinya 'Saya suka sabun'.",
-                "PP Anime = Pendapat tidak valid.",
-                "Story waifu gepeng, sadar woy dia gak nyata!",
-                "Cita-cita ke Akihabara, realita nongkrong di warkop."
-            ],
-            "rich": [
-                "Pamer iPhone boba, cicilan paylater belom lunas.",
-                "Foto di mobil orang, caption 'Work Hard'. Halu?",
-                "Instastory steak, di rumah makan mie instan dibagi dua.",
-                "Sok crypto, beli koin micin 10 ribu nyangkut nangis.",
-                "Outfit KW Mangga Dua bangga banget dipamerin."
-            ],
-            "general": [
-                "Muka pas-pasan, filter kebagusan. Ketemu asli dikira beda orang.",
-                "Akun digembok, dikira ada yang mau maling foto aib?",
-                "Rajin update status, males update skill.",
-                "Caption 'No Filter', padahal edit 3 aplikasi.",
-                "Itu muka apa adonan donat? Tepungnya tebel amat."
-            ]
-        };
+    // ⚠️ WAJIB DIISI: Masukkan API Key Gemini Anda di sini
+    const GEMINI_API_KEY = "AIzaSyBAV4DrQl9Y0mEQScvlfA_9ymi5RFR8Els"; 
 
-        // Pasang fungsi ke window agar bisa dipanggil HTML onclick
-        window.generateRoast = function() {
-            const username = document.getElementById('roastUsername').value.trim();
-            const type = document.getElementById('roastPersona').value;
-            const level = document.getElementById('roastLevel').value;
+    window.generateRoast = async function() {
+        const username = document.getElementById('roastUsername').value.trim();
+        const context = document.getElementById('roastContext').value.trim();
+        const type = document.getElementById('roastPersona').value; 
+        const level = document.getElementById('roastLevel').value;   
+        
+        if (!username) { alert("Username Instagram wajib diisi!"); return; }
+        if (!context) { alert("Isi fakta/aib target agar AI bisa meroasting!"); return; }
+        
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const output = document.getElementById('roastOutput');
+        const loadText = document.getElementById('loadingText');
+
+        result.classList.add('hidden');
+        loading.classList.remove('hidden');
+        if(loadText) loadText.innerText = "Sedang menyusun kata-kata pedas...";
+
+        try {
+            let style = (level === 'burnt') 
+                ? "Sangat kejam, toxic, sarkas, frontall, bahasa gaul tongkrongan (lo-gue), menusuk hati." 
+                : "Lucu, menyindir (julid), bahasa santai, seperti teman akrab yang lagi meledek.";
+
+            const requestBody = {
+                contents: [{
+                    parts: [{
+                        text: `Peran: Kamu adalah komika roasting profesional.
+                        
+                        Tugas: Roasting akun Instagram @${username}.
+                        
+                        Data Fakta Target (Gunakan ini sebagai bahan utama):
+                        "${context}"
+                        
+                        Tipe Orang: ${type}
+                        Gaya Bahasa: ${style}
+                        
+                        Instruksi Tambahan:
+                        - Buat 1 paragraf pendek saja (3-4 kalimat).
+                        - Gunakan bahasa Indonesia gaul/slang.
+                        - Harus lucu tapi menyakitkan.`
+                    }]
+                }]
+            };
+
+            // --- PERBAIKAN DI SINI: GANTI NAMA MODEL ---
+            // Ganti 'gemini-1.5-flash' atau 'gemini-pro' menjadi 'gemini-2.0-flash'
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+            const response = await fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(()=>({}));
+                // Jika gemini-2.0-flash juga belum aktif di region Anda, coba 'gemini-1.5-flash-002'
+                throw new Error(errData.error?.message || `Error ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            if (data.candidates && data.candidates.length > 0 && data.candidates[0].content) {
+                const aiText = data.candidates[0].content.parts[0].text;
+                output.innerText = aiText; 
+                loading.classList.add('hidden');
+                result.classList.remove('hidden');
+            } else {
+                throw new Error("AI tidak memberikan jawaban.");
+            }
+
+        } catch (error) {
+            console.error("Gemini Error:", error);
+            loading.classList.add('hidden');
             
-            if (!username) { alert("Masukin username dulu woy!"); return; }
+            // Fallback saran jika model masih error
+            let msg = error.message;
+            if(msg.includes("not found")) {
+                msg += "\n\nSaran: Coba ganti model di script.js menjadi 'gemini-1.5-flash-002' atau 'gemini-1.5-pro-002'.";
+            }
+            alert(`Gagal: ${msg}`);
+        }
+    };
 
-            const loading = document.getElementById('loading');
-            const result = document.getElementById('result');
-            const output = document.getElementById('roastOutput');
-            const loadText = document.getElementById('loadingText');
-
-            result.classList.add('hidden');
-            loading.classList.remove('hidden');
-            
-            const steps = ["Mencari akun...", "Menganalisa feed cringe...", "Menghitung jumlah filter...", "Menyiapkan mental...", "Memasak hujatan..."];
-            let step = 0;
-            
-            const interval = setInterval(() => {
-                if(step < steps.length) {
-                    if(loadText) loadText.innerText = steps[step];
-                    step++;
-                } else {
-                    clearInterval(interval);
-                    
-                    const templates = roasts[type] || roasts['general'];
-                    const randomRoast = templates[Math.floor(Math.random() * templates.length)];
-                    const randomRoast2 = roasts['general'][Math.floor(Math.random() * roasts['general'].length)];
-                    
-                    let finalRoast = "";
-                    if (level === 'mild') {
-                        finalRoast = `Buat @${username}: ${randomRoast} 😂`;
-                    } else if (level === 'spicy') {
-                        finalRoast = `Eh @${username}, dengerin ya. ${randomRoast} Tambah lagi nih: ${randomRoast2} 🔥`;
-                    } else {
-                        finalRoast = `WOY @${username}! 💀 ${randomRoast} Muka tembok ya? ${randomRoast2} Mending lu hapus akun aja dah. 🚮`;
-                    }
-
-                    if(output) output.innerText = finalRoast;
-                    loading.classList.add('hidden');
-                    result.classList.remove('hidden');
-                }
-            }, 800);
-        };
-
-        window.copyRoast = function() {
-            const text = document.getElementById('roastOutput').innerText;
-            navigator.clipboard.writeText(text).then(() => alert("Hujatan tersalin!"));
-        };
-    }
-})();
+    window.copyRoast = function() {
+        const text = document.getElementById('roastOutput').innerText;
+        navigator.clipboard.writeText(text).then(() => alert("Hujatan tersalin!"));
+    };
+}

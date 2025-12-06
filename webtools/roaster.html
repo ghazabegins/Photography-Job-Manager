@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Style Khusus Halaman Roasting */
         .roast-header {
             background: linear-gradient(45deg, #FF512F, #DD2476);
             -webkit-background-clip: text;
@@ -30,7 +29,8 @@
             display: block;
         }
 
-        .roast-select {
+        /* Style untuk input dan select */
+        .roast-select, .roast-input {
             width: 100%;
             padding: 12px;
             background: #2c2c2c;
@@ -38,6 +38,11 @@
             color: #fff;
             border-radius: 8px;
             outline: none;
+            font-family: inherit;
+        }
+
+        .roast-input:focus, .roast-select:focus {
+            border-color: #FF512F;
         }
 
         .roast-result-box {
@@ -48,23 +53,15 @@
             margin-top: 20px;
             position: relative;
             box-shadow: 0 0 20px rgba(221, 36, 118, 0.2);
+            min-height: 100px;
         }
 
         .roast-text {
             font-size: 1.1rem;
             line-height: 1.6;
             color: #fff;
-            font-family: 'Courier New', Courier, monospace; /* Font ala terminal/hacker */
-        }
-
-        .fire-anim {
-            font-size: 3rem;
-            animation: burn 0.5s infinite alternate;
-        }
-
-        @keyframes burn {
-            from { opacity: 0.8; transform: scale(1); }
-            to { opacity: 1; transform: scale(1.1); }
+            font-family: 'Courier New', Courier, monospace; /* Font ala terminal */
+            white-space: pre-wrap; /* Agar enter terbaca */
         }
     </style>
 </head>
@@ -77,7 +74,7 @@
 
         <header>
             <h1><i class="fas fa-fire" style="color: #FF512F;"></i> Insta <span class="roast-header">Roasting AI</span></h1>
-            <p>Analisa profil Instagram kamu dan biarkan AI menghujatnya dengan kejam.</p>
+            <p>Analisa akun Instagram menggunakan Gemini AI (Jujur & Menyakitkan).</p>
         </header>
 
         <div class="caption-form">
@@ -85,43 +82,49 @@
                 <label>Username Instagram (Tanpa @):</label>
                 <div class="input-with-btn">
                     <span style="padding: 12px; background: #333; border: 1px solid #444; border-right: none; border-radius: 8px 0 0 8px;">@</span>
-                    <input type="text" id="roastUsername" placeholder="cth: jokowi" style="border-radius: 0 8px 8px 0;">
+                    <input type="text" id="roastUsername" placeholder="cth: mantan_terindah" style="border-radius: 0 8px 8px 0;">
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>🔍 Fakta / Kebiasaan Target (Bahan Roasting):</label>
+                <textarea id="roastContext" class="roast-input" rows="3" placeholder="Contoh: Suka pamer iPhone kredit, Bio pake bahasa Jepang padahal wibu karbitan, Followers dikit tapi following banyak..."></textarea>
+                <p style="font-size: 0.75rem; color: #888; margin-top: 5px;">*Semakin detail aibnya, semakin pedas hasilnya!</p>
             </div>
 
             <div class="roast-options">
                 <div>
-                    <label>Level Kepedasan:</label>
-                    <select id="roastLevel" class="roast-select">
-                        <option value="mild">🌶️ Mild (Sarkas Tipis)</option>
-                        <option value="spicy" selected>🔥 Spicy (Menyala)</option>
-                        <option value="burnt">💀 Burnt (Toxic Abis)</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Tipe Persona:</label>
+                    <label>Persona Target:</label>
                     <select id="roastPersona" class="roast-select">
                         <option value="general">🌍 Umum / Random</option>
                         <option value="selebgram">✨ Sok Selebgram</option>
                         <option value="sadboy">🥀 Sadboy / Galau</option>
                         <option value="wibu">🌸 Wibu / Anime</option>
                         <option value="rich">💸 Sok Sultan (Flexing)</option>
+                        <option value="gamers">🎮 Gamers No Life</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Level Kepedasan:</label>
+                    <select id="roastLevel" class="roast-select">
+                        <option value="spicy">🔥 Spicy (Pedas Standar)</option>
+                        <option value="burnt" selected>💀 Burnt (Toxic & Kejam)</option>
                     </select>
                 </div>
             </div>
 
-            <button onclick="generateRoast()" class="btn-generate" style="background: linear-gradient(45deg, #FF512F, #DD2476); color: white;">
+            <button onclick="generateRoast()" class="btn-generate" style="background: linear-gradient(45deg, #FF512F, #DD2476); color: white; border: none;">
                 <i class="fas fa-biohazard"></i> MULAI ROASTING
             </button>
         </div>
 
         <div id="loading" class="hidden">
             <div class="spinner" style="border-top-color: #FF512F;"></div>
-            <p id="loadingText">Sedang menganalisa feed...</p>
+            <p id="loadingText">Gemini sedang menyusun kata-kata mutiara...</p>
         </div>
 
         <div id="result" class="hidden">
-            <h3>🔥 Hasil Analisa:</h3>
+            <h3>🔥 Hasil Analisa AI:</h3>
             
             <div class="roast-result-box">
                 <p id="roastOutput" class="roast-text">...</p>
@@ -138,7 +141,7 @@
         </div>
 
         <footer>
-            <p>⚠️ Warning: Hanya untuk hiburan. Jangan baper.</p>
+            <p>⚠️ Warning: Hanya untuk hiburan semata. Jangan baper.</p>
             <p>&copy; 2025 TJ Sosmed Tools.</p>
         </footer>
     </div>
